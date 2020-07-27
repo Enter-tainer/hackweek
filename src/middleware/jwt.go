@@ -1,9 +1,10 @@
 package middleware
 
 import (
+	"tree-hole/config"
+
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"warmup-ref/config"
 )
 
 func JWTMiddleware() echo.MiddlewareFunc {

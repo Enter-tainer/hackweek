@@ -2,19 +2,20 @@ package model
 
 import (
 	"context"
+	"log"
+	"strconv"
+	"time"
+	"tree-hole/config"
+
 	"github.com/go-redis/redis"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"log"
-	"strconv"
-	"time"
-	"warmup-ref/config"
 )
 
 var (
 	MongoDatabase *mongo.Database
-	RedisClient *redis.Client
+	RedisClient   *redis.Client
 )
 
 func InitModel() {

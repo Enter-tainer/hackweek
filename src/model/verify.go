@@ -2,9 +2,10 @@ package model
 
 import (
 	"fmt"
-	"github.com/go-redis/redis"
 	"time"
-	"warmup-ref/config"
+	"tree-hole/config"
+
+	"github.com/go-redis/redis"
 )
 
 const formatVerifyCodeKey = "code:%s"

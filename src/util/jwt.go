@@ -1,9 +1,10 @@
 package util
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"time"
-	"warmup-ref/config"
+	"tree-hole/config"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 type jwtClaims struct {
@@ -15,7 +16,7 @@ func NewJWTToken(idHex string) (string, time.Time, error) {
 	expireTime := time.Now().Add(time.Duration(config.Config.JWT.TokenExpire) * time.Minute)
 	claims := jwtClaims{
 		StandardClaims: jwt.StandardClaims{
-			Subject:   "warmup-ref",
+			Subject:   "tree-hole",
 			IssuedAt:  time.Now().Unix(),
 			ExpiresAt: expireTime.Unix(),
 		},

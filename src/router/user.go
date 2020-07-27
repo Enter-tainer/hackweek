@@ -1,9 +1,10 @@
 package router
 
 import (
+	"tree-hole/controller"
+	middleware2 "tree-hole/middleware"
+
 	"github.com/labstack/echo"
-	"warmup-ref/controller"
-	middleware2 "warmup-ref/middleware"
 )
 
 func initUserGroup(group *echo.Group) {

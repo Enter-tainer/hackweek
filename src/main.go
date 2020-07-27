@@ -1,14 +1,15 @@
 package main
 
 import (
+	"log"
+	"tree-hole/config"
+	"tree-hole/model"
+	"tree-hole/router"
+	"tree-hole/util"
+
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"log"
-	"warmup-ref/config"
-	"warmup-ref/model"
-	"warmup-ref/router"
-	"warmup-ref/util"
 )
 
 type CustomValidator struct {
