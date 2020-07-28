@@ -54,7 +54,6 @@ Authorization: Bearer <JWT token>
 
 ```json
 {
-    "password": "密码",
     "email": "邮箱地址"
 }
 ```
@@ -78,6 +77,7 @@ Authorization: Bearer <JWT token>
 ```json
 {
     "_id": "用户 ID",
+    "password": "密码",
     "code": "邮箱验证码"
 }
 ```
