@@ -106,7 +106,7 @@ Authorization: Bearer <JWT token>
 }
 ```
 
-### \*GET /posts
+### \*GET /post
 
 获取所有帖子的信息
 
@@ -134,7 +134,7 @@ Authorization: Bearer <JWT token>
 }
 ```
 
-### \*GET /posts/:id
+### \*GET /post/:id
 
 获取指定id的帖子的信息
 
@@ -163,7 +163,7 @@ Authorization: Bearer <JWT token>
 
 其中，`created_at` 和 `updated_at` 是 Unix 时间戳。
 
-### \*POST /posts
+### \*POST /post
 
 发表新帖子
 
@@ -183,7 +183,7 @@ Authorization: Bearer <JWT token>
 }
 ```
 
-### \*POST /posts/:id
+### \*POST /post/:id
 
 在id为:id的帖子下面回帖
 
