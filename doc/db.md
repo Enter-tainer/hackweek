@@ -12,6 +12,7 @@
 ### 帖子集合 post
 
 - _id `ObjectID`：帖子 ID
+- salt `String`：随机字符串，用来给 user 字段加盐
 - title `String` 标题
 - createdAt `Date` 发布时间
 - updatedAt `Date` 修改时间

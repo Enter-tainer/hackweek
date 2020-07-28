@@ -32,7 +32,7 @@ Authorization: Bearer <JWT token>
 
 ### GET /user/token?email=\<邮箱\>&password=\<密码\>
 
-获取用户 JWT 令牌。
+获取用户 JWT 令牌和用户id。
 
 请求：无
 
@@ -41,6 +41,7 @@ Authorization: Bearer <JWT token>
 ```json
 {
     "token": "令牌",
+    "_id": "134342"
     "expire_time": 123456789 // 令牌到期时间
 }
 ```
@@ -122,12 +123,14 @@ Authorization: Bearer <JWT token>
             "created_at": 1145141919,
             "updated_at": 1145141919,
             "title": "标题",
+            "user_id": "128dh83h83",
             "content": "内容",
         },{
             "_id": "帖子id",
             "created_at": 1145141919,
             "updated_at": 1145141919,
             "title": "标题",
+            "user_id": "128dh83h83",
             "content": "内容",
         }
     ]
@@ -148,12 +151,17 @@ Authorization: Bearer <JWT token>
     "created_at": 1145141919,
     "updated_at": 1145141919,
     "title": "标题",
+    "user_id": "128dh83h83",
     "content": "内容",
     "reply": [{
+        "_id": "32d8dshn32",
+        "user_id": "128dh83h83"
         "created_at": 1145141919,
         "updated_at": 1145141919,
         "content": "内容",
     }, {
+        "_id": "en93jd9392",
+        "user_id": "128dh83h83"
         "created_at": 1145141919,
         "updated_at": 1145141919,
         "content": "内容",
