@@ -20,7 +20,7 @@ Authorization: Bearer <JWT token>
 }
 ```
 
-下列接口定义中，服务器响应格式均指 data 中的子文档格式。
+***下列接口定义中，服务器响应格式均指 data 中的子文档格式。***
 
 如果遇到错误，则 `success` 值一定为 `false`，且 `hint` 字段中包含错误的具体内容。
 
@@ -28,9 +28,9 @@ Authorization: Bearer <JWT token>
 
 带 \* 号标注的接口为需要认证的接口，带 \*\* 号标注的为需要管理权限的接口。
 
-API 前缀：`/api/v1`
+***API 前缀：`/api/v1`***
 
-### GET /user/token?username=\<用户名\>&password=\<密码\>
+### GET /user/token?email=\<邮箱\>&password=\<密码\>
 
 获取用户 JWT 令牌。
 
@@ -53,9 +53,7 @@ API 前缀：`/api/v1`
 
 ```json
 {
-    "username": "用户名",
     "password": "密码",
-    "phone": "手机号",
     "email": "邮箱地址"
 }
 ```
@@ -85,25 +83,7 @@ API 前缀：`/api/v1`
 
 响应：无
 
-### \*PUT /user/info
-
-修改用户个人信息。可以修改的字段有：用户名（不可重复）、密码、手机号、邮箱地址（需要重新确认），全部字段都不可为空。请求体中包含哪些字段就修改哪些。
-
-请求：
-
-```json
-{
-    "_id": "用户 ID",
-    "username": "用户名",
-    "password": "密码",
-    "phone": "手机号",
-    "email": "邮箱地址"
-}
-```
-
-响应：无
-
-### \*\*DELETE /user?_id=\<用户 ID\>
+### \*DELETE /user?_id=\<用户 ID\>
 
 删除用户。
 
@@ -113,7 +93,7 @@ API 前缀：`/api/v1`
 
 ### \*GET /user/info?_id=\<用户 ID\>
 
-获取用户信息，不包含密码，用户 ID 可以为空以获取所有人的信息。只有管理权限能获取其他人的用户信息或所有人的信息。
+获取用户信息，不包含密码，只有管理权限能获取其他人的用户信息或所有人的信息。
 
 请求：无
 
@@ -121,15 +101,97 @@ API 前缀：`/api/v1`
 
 ```json
 {
-    "result": [
+    "_id": "用户 ID",
+    "email": "邮箱地址"
+}
+```
+
+### \*GET /posts
+
+获取所有帖子的信息
+
+请求：无
+
+响应：
+
+```json
+{
+    "posts_info": [
         {
-            "_id": "用户 ID",
-            "username": "用户名",
-            "phone": "手机号",
-            "email": "邮箱地址"
+            "_id": "帖子id",
+            "created_at": 1145141919,
+            "updated_at": 1145141919,
+            "title": "标题",
+            "content": "内容",
+        },{
+            "_id": "帖子id",
+            "created_at": 1145141919,
+            "updated_at": 1145141919,
+            "title": "标题",
+            "content": "内容",
         }
-        // ... 以下略
     ]
 }
 ```
 
+### \*GET /posts/:id
+
+获取指定id的帖子的信息
+
+请求：无
+
+响应：
+
+``` json
+{
+    "_id": "帖子id",
+    "created_at": 1145141919,
+    "updated_at": 1145141919,
+    "title": "标题",
+    "content": "内容",
+    "reply": [{
+        "created_at": 1145141919,
+        "updated_at": 1145141919,
+        "content": "内容",
+    }, {
+        "created_at": 1145141919,
+        "updated_at": 1145141919,
+        "content": "内容",
+    }]
+}
+```
+
+其中，`created_at` 和 `updated_at` 是 Unix 时间戳。
+
+### \*POST /posts
+
+发表新帖子
+
+请求：
+``` json
+{
+    "title": "标题",
+    "content": "内容"
+}
+```
+
+响应：
+
+```json
+{
+    "_id": "帖子id"
+}
+```
+
+### \*POST /posts/:id
+
+在id为:id的帖子下面回帖
+
+请求：
+``` json
+{
+    "content": "内容"
+}
+```
+
+响应：无
