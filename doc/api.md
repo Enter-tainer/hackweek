@@ -41,7 +41,7 @@ Authorization: Bearer <JWT token>
 ```json
 {
     "token": "令牌",
-    "_id": "134342"
+    "_id": "134342",
     "expire_time": 123456789 // 令牌到期时间
 }
 ```
@@ -155,13 +155,13 @@ Authorization: Bearer <JWT token>
     "content": "内容",
     "reply": [{
         "_id": "32d8dshn32",
-        "user_id": "128dh83h83"
+        "user_id": "128dh83h83",
         "created_at": 1145141919,
         "updated_at": 1145141919,
         "content": "内容",
     }, {
         "_id": "en93jd9392",
-        "user_id": "128dh83h83"
+        "user_id": "128dh83h83",
         "created_at": 1145141919,
         "updated_at": 1145141919,
         "content": "内容",
