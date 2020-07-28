@@ -2,13 +2,14 @@ package model
 
 import (
 	"context"
-	"errors"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 const colNameUser = "user"
+
 var colUser *mongo.Collection
 
 func initModelUser() {
@@ -16,13 +17,13 @@ func initModelUser() {
 }
 
 type User struct {
-	ID       primitive.ObjectID `bson:"_id" json:"_id"`
-	Username string             `bson:"username" json:"username"`
-	Password string             `bson:"password" json:"password"`
-	Phone    string             `bson:"phone" json:"phone"`
-	Email    string             `bson:"email" json:"email"`
-	IsAdmin  bool               `bson:"is_admin" json:"is_admin"`
-	Verified bool               `bson:"verified" json:"verified"`
+	ID primitive.ObjectID `bson:"_id" json:"_id"`
+	// Username string             `bson:"username" json:"username"`
+	Password string `bson:"password" json:"password"`
+	// Phone    string             `bson:"phone" json:"phone"`
+	Email string `bson:"email" json:"email"`
+	// IsAdmin  bool               `bson:"is_admin" json:"is_admin"`
+	Verified bool `bson:"verified" json:"verified"`
 }
 
 func GetUserWithID(idHex string) (User, bool, error) {
@@ -68,16 +69,16 @@ func GetAllUsers() ([]User, error) {
 	return users, nil
 }
 
-func IsUserAdmin(idHex string) (bool, error) {
-	user, found, err := GetUserWithID(idHex)
-	if !found {
-		return false, errors.New("user with _id " + idHex + " not found")
-	}
-	if err != nil {
-		return false, err
-	}
-	return user.IsAdmin, nil
-}
+// func IsUserAdmin(idHex string) (bool, error) {
+// 	user, found, err := GetUserWithID(idHex)
+// 	if !found {
+// 		return false, errors.New("user with _id " + idHex + " not found")
+// 	}
+// 	if err != nil {
+// 		return false, err
+// 	}
+// 	return user.IsAdmin, nil
+// }
 
 func AddUser(user User) (string, error) {
 	user.ID = primitive.NewObjectID()
