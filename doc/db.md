@@ -5,7 +5,7 @@
 ### 用户集合 user
 
 - _id `ObjectId`：用户 ID
-- password `String`：bcrypt hash 后的密码
+- password `String`：argon2 hash 后的密码
 - email `String`：邮箱
 - verified `Boolean`：是否已经验证邮箱
 
