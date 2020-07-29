@@ -14,13 +14,13 @@
 - _id `ObjectID`：帖子 ID
 - salt `String`：随机字符串，用来给 user 字段加盐
 - title `String` 标题
-- createdAt `Date` 发布时间
-- updatedAt `Date` 修改时间
+- createdAt `ISODate` 发布时间
+- updatedAt `ISODate` 修改时间
 - user `ObjectID` 发布人ID
 - content `String`: 帖子内容
 - reply `Array`：所有回复
 
-reply 格式与 posts 类似，但是没有 title 和 reply 两个字段
+reply 格式与 posts 类似，但是没有 title, reply, salt 字段
 
 ## Redis
 

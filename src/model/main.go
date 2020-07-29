@@ -56,4 +56,5 @@ func InitModel() {
 	RedisClient = redisClient
 
 	initModelUser()
+	initModelPost()
 }

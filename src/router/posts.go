@@ -9,7 +9,7 @@ import (
 
 func initPostGroup(group *echo.Group) {
 	group.GET("/", controller.PostGetAll, middleware.JWTMiddleware())
-	group.GET("/:id", controller.PostGetFromId, middleware.JWTMiddleware())
+	group.GET("/:id", controller.PostGetWithId, middleware.JWTMiddleware())
 	group.POST("/", controller.PostNew, middleware.JWTMiddleware())
-	group.GET("/:id", controller.PostNewComment, middleware.JWTMiddleware())
+	group.POST("/:id", controller.PostNewComment, middleware.JWTMiddleware())
 }
