@@ -18,6 +18,7 @@ type paramUserGetToken struct {
 
 type responseUserGetToken struct {
 	Token  string `json:"token"`
+	ID     string `json:"_id"`
 	Expire int64  `json:"expire_time"`
 }
 
@@ -50,6 +51,7 @@ func UserGetToken(context echo.Context) error {
 	}
 	return util.SuccessResponse(context, http.StatusOK, responseUserGetToken{
 		Token:  token,
+		ID:     user.ID.Hex(),
 		Expire: expireTime.Unix(),
 	})
 }
