@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+    mongo:
+        image: mongo:latest
+        volumes:
+            - ./data/db/master:/data/db
+            - /etc/localtime:/etc/localtime:ro
+        environment:
+            - TZ=Asia/Shanghai
+        container_name: tree-hole_mongo
+        networks:
+            - tree-hole
+    redis:
+        image: redis:latest
+        networks:
+            - tree-hole
+        container_name: tree-hole_redis
+    app:
+        build: src
+        volumes:
+            - ./env:/env
+        environment:
+            - CONFIG_FILE=default.json
+        networks:
+            - tree-hole
+        depends_on:
+            - mongo
+            - redis
+        container_name: tree-hole_app
+networks:
+    tree-hole:
