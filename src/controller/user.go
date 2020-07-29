@@ -94,10 +94,10 @@ func UserRegister(context echo.Context) error {
 
 	verifyCode := util.RandomString(config.Config.App.VerifyCodeLength)
 	log.Printf("code for %s: %s", param.Email, verifyCode)
-	// err = util.SendEmail(param.Email, "注册邮箱验证码", "您的邮箱验证码为：<code>"+verifyCode+"</code>")
-	// if err != nil {
-	// 	return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
-	// }
+	err = util.SendEmail(param.Email, "注册邮箱验证码", "您的邮箱验证码为：<code>"+verifyCode+"</code>")
+	if err != nil {
+		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
+	}
 	err = model.AddVerifyCode(verifyCode, idHex)
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())

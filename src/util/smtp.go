@@ -14,6 +14,7 @@ var (
 func initUtilSMTP() {
 	smtp := config.Config.SMTP
 	smtpDialer = gomail.NewDialer(smtp.SMTPAddress, smtp.SMTPPort, smtp.EmailAddress, smtp.EmailPassword)
+	emailAddress = smtp.EmailAddress
 }
 
 func SendEmail(receiver string, subject string, content string) error {
