@@ -26,7 +26,7 @@ func main() {
 	util.InitUtil()
 
 	e := echo.New()
-
+	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 
