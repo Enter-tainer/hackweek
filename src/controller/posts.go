@@ -63,7 +63,7 @@ func PostGetWithId(context echo.Context) error {
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	}
-	var reply []responsePostGetWithIDReply
+	reply := make([]responsePostGetWithIDReply, 0)
 	for _, v := range post.Reply {
 		reply = append(reply, responsePostGetWithIDReply{
 			Content:   v.Content,
