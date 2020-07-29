@@ -10,21 +10,21 @@ import (
 )
 
 type responsePostGetAllSingle struct {
-	ID        string `json: "_id"`
-	CreatedAt int64  `json: "created_at"`
-	UpdatedAt int64  `json: "updated_at"`
-	Title     string `json: "title"`
-	UserID    string `json: "user_id"`
-	Content   string `json: "content"`
+	ID        string `json:"_id"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
+	Title     string `json:"title"`
+	UserID    string `json:"user_id"`
+	Content   string `json:"content"`
 }
 
 type responsePostGetAll struct {
-	PostsInfo []responsePostGetAllSingle `json posts_info`
+	PostsInfo []responsePostGetAllSingle `json:"posts_info"`
 }
 
 func PostGetAll(context echo.Context) error {
 	_ = util.MustGetIDFromContext(context)
-	var result responsePostGetAll
+	result := responsePostGetAll{PostsInfo: make([]responsePostGetAllSingle, 0)}
 	posts, err := model.GetAllPost()
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
@@ -36,21 +36,21 @@ func PostGetAll(context echo.Context) error {
 }
 
 type responsePostGetWithIDReply struct {
-	ID        string `json: "_id"`
-	UserID    string `json: "user_id"`
-	CreatedAt int64  `json: "created_at"`
-	UpdatedAt int64  `json: "updated_at"`
-	Content   string `json: "content"`
+	ID        string `json:"_id"`
+	UserID    string `json:"user_id"`
+	CreatedAt int64  `json:"created_at"`
+	UpdatedAt int64  `json:"updated_at"`
+	Content   string `json:"content"`
 }
 
 type responsePostGetWithID struct {
-	ID        string                       `json: "_id"`
-	CreatedAt int64                        `json: "created_at"`
-	UpdatedAt int64                        `json: "updated_at"`
-	Title     string                       `json: "title"`
-	UserID    string                       `json: "user_id"`
-	Content   string                       `json: "content"`
-	Reply     []responsePostGetWithIDReply `json: "reply"`
+	ID        string                       `json:"_id"`
+	CreatedAt int64                        `json:"created_at"`
+	UpdatedAt int64                        `json:"updated_at"`
+	Title     string                       `json:"title"`
+	UserID    string                       `json:"user_id"`
+	Content   string                       `json:"content"`
+	Reply     []responsePostGetWithIDReply `json:"reply"`
 }
 
 func PostGetWithId(context echo.Context) error {
