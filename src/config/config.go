@@ -11,6 +11,7 @@ type TypeAppConfig struct {
 	Address          string `json:"address"`
 	VerifyCodeLength int    `json:"verify_code_length"`
 	VerifyCodeExpire int    `json:"verify_code_expire"` // unit: minute
+	Salt             string `json:salt`
 }
 
 type TypeJWTConfig struct {
@@ -34,6 +35,14 @@ type TypeConfig struct {
 	JWT   TypeJWTConfig   `json:"jwt"`
 	Mongo TypeMongoConfig `json:"mongo"`
 	Redis TypeRedisConfig `json:"redis"`
+	SMTP  TypeSMTPConfig  `json:"email"`
+}
+
+type TypeSMTPConfig struct {
+	EmailAddress  string `json:"address"`
+	EmailPassword string `json:"password"`
+	SMTPAddress   string `json:"smtp_address"`
+	SMTPPort      int    `json:"smtp_port"`
 }
 
 var Config TypeConfig

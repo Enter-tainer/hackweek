@@ -1,10 +1,9 @@
 package util
 
 import (
+	"tree-hole/config"
+
 	"github.com/go-gomail/gomail"
-	"log"
-	"os"
-	"strconv"
 )
 
 var (
@@ -13,23 +12,8 @@ var (
 )
 
 func initUtilSMTP() {
-	var found bool
-	emailAddress, found = os.LookupEnv("EMAIL_ADDR")
-	emailPassword, found := os.LookupEnv("EMAIL_PASS")
-	smtpAddress, found := os.LookupEnv("SMTP_ADDR")
-	smtpPortStr, found := os.LookupEnv("SMTP_PORT")
-	if !found {
-		log.Println("util: smtp env variables not found")
-		log.Panic()
-	}
-
-	smtpPort, err := strconv.Atoi(smtpPortStr)
-	if err != nil {
-		log.Println("util: cannot parse smtp port " + smtpPortStr)
-		log.Panic(err)
-	}
-
-	smtpDialer = gomail.NewDialer(smtpAddress, smtpPort, emailAddress, emailPassword)
+	smtp := config.Config.SMTP
+	smtpDialer = gomail.NewDialer(smtp.SMTPAddress, smtp.SMTPPort, smtp.EmailAddress, smtp.EmailPassword)
 }
 
 func SendEmail(receiver string, subject string, content string) error {

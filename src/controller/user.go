@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"encoding/base64"
+	"log"
 	"net/http"
 	"tree-hole/config"
 	"tree-hole/model"
@@ -12,7 +12,7 @@ import (
 )
 
 type paramUserGetToken struct {
-	Username string `query:"username" validate:"required"`
+	Email    string `query:"email" validate:"required"`
 	Password string `query:"password" validate:"required"`
 }
 
@@ -30,15 +30,15 @@ func UserGetToken(context echo.Context) error {
 		return util.ErrorResponse(context, http.StatusBadRequest, err.Error())
 	}
 
-	user, found, err := model.GetUserWithUsername(param.Username)
+	user, found, err := model.GetUserWithEmail(param.Email)
 	if !found {
 		return util.ErrorResponse(context, http.StatusBadRequest, "user not found")
 	}
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	}
-	if user.Password != base64.StdEncoding.EncodeToString([]byte(param.Password)) {
-		return util.ErrorResponse(context, http.StatusForbidden, "username and password don't match")
+	if user.Password != util.PasswordHash(param.Password) {
+		return util.ErrorResponse(context, http.StatusForbidden, "email and password don't match")
 	}
 	if !user.Verified {
 		return util.ErrorResponse(context, http.StatusForbidden, "please verify your email")
@@ -55,10 +55,10 @@ func UserGetToken(context echo.Context) error {
 }
 
 type paramUserRegister struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
-	Phone    string `json:"phone" validate:"required,numeric"`
-	Email    string `json:"email" validate:"required,email"`
+	// Username string `json:"username" validate:"required"`
+	// Password string `json:"password" validate:"required"`
+	// Phone    string `json:"phone" validate:"required,numeric"`
+	Email string `json:"email" validate:"required,email"`
 }
 
 type responseUserRegister struct {
@@ -74,17 +74,17 @@ func UserRegister(context echo.Context) error {
 		return util.ErrorResponse(context, http.StatusBadRequest, err.Error())
 	}
 
-	_, found, err := model.GetUserWithUsername(param.Username)
+	_, found, err := model.GetUserWithEmail(param.Email)
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	}
 	if found {
-		return util.ErrorResponse(context, http.StatusBadRequest, "username already exists")
+		return util.ErrorResponse(context, http.StatusBadRequest, "email already exists")
 	}
 
 	user := model.User{
 		// Username: param.Username,
-		Password: base64.StdEncoding.EncodeToString([]byte(param.Password)),
+		Password: "",
 		// Phone:    param.Phone,
 		Email: param.Email,
 		// IsAdmin:  false,
@@ -93,10 +93,11 @@ func UserRegister(context echo.Context) error {
 	idHex, err := model.AddUser(user)
 
 	verifyCode := util.RandomString(config.Config.App.VerifyCodeLength)
-	err = util.SendEmail(param.Email, "注册邮箱验证码", "您的邮箱验证码为：<code>"+verifyCode+"</code>")
-	if err != nil {
-		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
-	}
+	log.Printf("code for %s: %s", param.Email, verifyCode)
+	// err = util.SendEmail(param.Email, "注册邮箱验证码", "您的邮箱验证码为：<code>"+verifyCode+"</code>")
+	// if err != nil {
+	// 	return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
+	// }
 	err = model.AddVerifyCode(verifyCode, idHex)
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
@@ -108,8 +109,9 @@ func UserRegister(context echo.Context) error {
 }
 
 type paramUserVerify struct {
-	ID   string `json:"_id" validate:"required"`
-	Code string `json:"code" validate:"required"`
+	ID       string `json:"_id" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Code     string `json:"code" validate:"required"`
 }
 
 func UserVerify(context echo.Context) error {
@@ -136,20 +138,20 @@ func UserVerify(context echo.Context) error {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	}
 
-	err = model.UpdateUser(param.ID, bson.M{"verified": true})
+	err = model.UpdateUser(param.ID, bson.M{"verified": true, "password": util.PasswordHash(param.Password)})
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	}
 	return util.SuccessResponse(context, http.StatusOK, nil)
 }
 
-type paramUserUpdateInfo struct {
-	ID       string `json:"_id" validate:"required"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Phone    string `json:"phone" validate:"omitempty,numeric"`
-	Email    string `json:"email" validate:"omitempty,email"`
-}
+// type paramUserUpdateInfo struct {
+// 	ID       string `json:"_id" validate:"required"`
+// 	Username string `json:"username"`
+// 	Password string `json:"password"`
+// 	Phone    string `json:"phone" validate:"omitempty,numeric"`
+// 	Email    string `json:"email" validate:"omitempty,email"`
+// }
 
 // func UserUpdateInfo(context echo.Context) error {
 // 	var param paramUserUpdateInfo
@@ -216,6 +218,9 @@ func UserDelete(context echo.Context) error {
 	if err := context.Validate(param); err != nil {
 		return util.ErrorResponse(context, http.StatusBadRequest, err.Error())
 	}
+	if param.ID != util.MustGetIDFromContext(context) {
+		return util.ErrorResponse(context, http.StatusForbidden, "you can not delete others' account")
+	}
 
 	// id := util.MustGetIDFromContext(context)
 	// isAdmin, err := model.IsUserAdmin(id)
@@ -234,7 +239,12 @@ func UserDelete(context echo.Context) error {
 }
 
 type paramUserGetInfo struct {
-	ID string `query:"_id"`
+	ID string `query:"_id" validate:"required"`
+}
+
+type responseUserGetInfo struct {
+	ID    string `json:"_id"`
+	Email string `json:"email"`
 }
 
 func UserGetInfo(context echo.Context) error {
@@ -246,46 +256,23 @@ func UserGetInfo(context echo.Context) error {
 		return util.ErrorResponse(context, http.StatusBadRequest, err.Error())
 	}
 
-	var result []model.User
 	id := util.MustGetIDFromContext(context)
 	// isAdmin, err := model.IsUserAdmin(id)
 	// if err != nil {
 	// 	return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	// }
 
-	if param.ID != "" {
-		if param.ID != id {
-			return util.ErrorResponse(context, http.StatusForbidden, "you are not admin")
-		}
-
-		user, found, err := model.GetUserWithID(param.ID)
-		if !found {
-			return util.ErrorResponse(context, http.StatusBadRequest, "user not found")
-		}
-		if err != nil {
-			return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
-		}
-		result = []model.User{user}
-	} else { // id not set, query for all users
-		// if !isAdmin {
-		// 	return util.ErrorResponse(context, http.StatusForbidden, "you are not admin")
-		// }
-
-		users, err := model.GetAllUsers()
-		if err != nil {
-			return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
-		}
-		result = users
+	if param.ID != id {
+		return util.ErrorResponse(context, http.StatusForbidden, "you are not admin")
 	}
 
-	response := make([]echo.Map, 0)
-	for _, user := range result {
-		response = append(response, echo.Map{
-			"_id": user.ID.Hex(),
-			// "username": user.Username,
-			// "phone":    user.Phone,
-			"email": user.Email,
-		})
+	user, found, err := model.GetUserWithID(param.ID)
+	if !found {
+		return util.ErrorResponse(context, http.StatusBadRequest, "user not found")
 	}
-	return util.SuccessResponse(context, http.StatusOK, echo.Map{"result": response})
+	if err != nil {
+		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
+	}
+
+	return util.SuccessResponse(context, http.StatusOK, responseUserGetInfo{ID: user.ID.Hex(), Email: user.Email})
 }

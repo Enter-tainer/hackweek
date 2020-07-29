@@ -56,6 +56,18 @@ func GetUserWithUsername(username string) (User, bool, error) {
 	return user, true, nil
 }
 
+func GetUserWithEmail(email string) (User, bool, error) {
+	var user User
+	err := colUser.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
+	if err == mongo.ErrNoDocuments {
+		return user, false, nil
+	}
+	if err != nil {
+		return user, false, err
+	}
+	return user, true, nil
+}
+
 func GetAllUsers() ([]User, error) {
 	var users []User
 	result, err := colUser.Find(context.Background(), bson.M{})

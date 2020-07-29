@@ -2,10 +2,11 @@
   "app": {
     "address": "127.0.0.1:23333",
     "verify_code_length": 6,
-    "verify_code_expire": 30
+    "verify_code_expire": 30,
+    "salt": "537e0f5c-0688-4d3c-a8a9-5c648653d79d"
   },
   "jwt": {
-    "token_expire": 180,
+    "token_expire": 1800,
     "secret": "WaRMuP-reF&U4@3"
   },
   "mongo": {
@@ -16,5 +17,11 @@
   "redis": {
     "address": "127.0.0.1",
     "port": 6379
+  },
+  "email": {
+    "address": "",
+    "password": "",
+    "smtp_address": "",
+    "smtp_port": 465
   }
 }
