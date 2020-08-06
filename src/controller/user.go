@@ -76,24 +76,25 @@ func UserRegister(context echo.Context) error {
 		return util.ErrorResponse(context, http.StatusBadRequest, err.Error())
 	}
 
-	_, found, err := model.GetUserWithEmail(param.Email)
+	userFound, found, err := model.GetUserWithEmail(param.Email)
 	if err != nil {
 		return util.ErrorResponse(context, http.StatusInternalServerError, err.Error())
 	}
-	if found {
+	if found && userFound.Verified {
 		return util.ErrorResponse(context, http.StatusBadRequest, "email already exists")
 	}
-
-	user := model.User{
-		// Username: param.Username,
-		Password: "",
-		// Phone:    param.Phone,
-		Email: param.Email,
-		// IsAdmin:  false,
-		Verified: false,
+	idHex := userFound.ID.Hex()
+	if !found {
+		user := model.User{
+			// Username: param.Username,
+			Password: "",
+			// Phone:    param.Phone,
+			Email: param.Email,
+			// IsAdmin:  false,
+			Verified: false,
+		}
+		idHex, err = model.AddUser(user)
 	}
-	idHex, err := model.AddUser(user)
-
 	verifyCode := util.RandomString(config.Config.App.VerifyCodeLength)
 	log.Printf("code for %s: %s", param.Email, verifyCode)
 	err = util.SendEmail(param.Email, "注册邮箱验证码", "您的邮箱验证码为：<code>"+verifyCode+"</code>")
