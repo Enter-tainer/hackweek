@@ -1,0 +1,27 @@
+{
+  "app": {
+    "address": "0.0.0.0:23333",
+    "verify_code_length": 6,
+    "verify_code_expire": 30,
+    "salt": "salt-string"
+  },
+  "jwt": {
+    "token_expire": 21600,
+    "secret": "your-secret"
+  },
+  "mongo": {
+    "address": "mongo",
+    "port": 27017,
+    "database": "tree-hole"
+  },
+  "redis": {
+    "address": "redis",
+    "port": 6379
+  },
+  "email": {
+    "address": "your@email.com",
+    "password": "yourpassword",
+    "smtp_address": "your.stmp.server.com",
+    "smtp_port": 465
+  }
+}
