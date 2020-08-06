@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"strings"
 	"tree-hole/config"
 	"tree-hole/model"
 	"tree-hole/util"
@@ -74,6 +75,10 @@ func UserRegister(context echo.Context) error {
 	}
 	if err := context.Validate(param); err != nil {
 		return util.ErrorResponse(context, http.StatusBadRequest, err.Error())
+	}
+
+	if !strings.HasSuffix(param.Email, "@hust.edu.cn") {
+		return util.ErrorResponse(context, http.StatusBadRequest, "only hust emails can register")
 	}
 
 	userFound, found, err := model.GetUserWithEmail(param.Email)
